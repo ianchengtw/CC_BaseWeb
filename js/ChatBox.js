@@ -83,5 +83,5 @@ var cb = ChatBox.getInstance();
 cb.insertUser(1,"Ian","pic",1);
 cb.insertUser(2,"Mary","pic",1);
 cb.insertUser(3,"Alice","pic",1);
-//console.log(cb.publicMethod());
+
 
