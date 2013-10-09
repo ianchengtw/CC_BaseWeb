@@ -1,0 +1,30 @@
+.RPSgame {width:520px; height:auto; border:1px solid black;
+		  padding:20px 20px 60px 20px;
+		  margin-left:auto; margin-right:auto;}
+header {text-align:center;}
+.inputArea {//margin-left:20px; padding:25px 10px;
+			margin:0 auto;
+			width:460px; background-color:#CCC;
+			border:1px solid block;}
+#outputArea {margin:20px auto;
+			 width:380px; background-color:#efefef;}
+.imgRock {
+	background:url(../images/RockPaperScissors.jpg) no-repeat;
+	background-position:-128px -112px;
+	width: 109px; height: 109px; //border: none;
+}
+.imgPaper {
+	background:url(../images/RockPaperScissors.jpg) no-repeat;
+	background-position:0px -112px;
+	width: 109px; height: 109px; //border: none;
+}
+.imgScissors {
+	background:url(../images/RockPaperScissors.jpg) no-repeat;
+	background-position:-66px 0px;
+	width: 109px; height: 109px; //border: none;
+}
+img {max-width:50%;// position:relative; top:50px;
+}
+.inputArea .imgRock {cursor:pointer; margin:0 20px;}
+.inputArea .imgPaper {cursor:pointer; margin:0 20px;}
+.inputArea .imgScissors {cursor:pointer; margin:0 20px;}

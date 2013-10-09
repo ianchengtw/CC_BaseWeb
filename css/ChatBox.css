@@ -1,0 +1,50 @@
+#chat_Box {
+	width:250px;
+	height:auto;
+	border:1px solid black;
+	border-bottom:none;
+	position:absolute;
+	right:10px;
+	bottom:0;
+}
+#chat_Bar {
+	padding:5px;
+	background-color:#00CCFF;
+}
+#chat_List {
+	
+}
+#chat_user {
+	
+}
+div[id^="cu_"] {
+	float:left;
+	height:2em;
+	position:relative;
+}
+#cu_name {
+	width:60%;
+	line-height:2em;
+}
+#cu_name span{
+	vertical-align:middle;
+	padding-left:5px;
+}
+#cu_pic {
+	width:20%;
+}
+#cu_online {
+	width:20%;
+}
+#cu_pic img {
+	position:absolute;
+	top:0;right:0;left:0;bottom:0;
+	margin:auto;
+}
+#cu_online img{
+	position:absolute;
+	top:0;right:0;left:0;bottom:0;
+	margin:auto;
+	width:40%;
+	height:50%;
+}
