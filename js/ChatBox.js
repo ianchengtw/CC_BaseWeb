@@ -39,6 +39,10 @@ var ChatBox = (function () {
 			insertUser: function(id,name,pic,online){
 				var u = document.createElement("div");
 				u.id = 'chat_user';
+				u.setAttribute("onClick", "alertUserWindow(this)");
+				var i = document.createElement("input");
+				i.type = "hidden";
+				i.value = id;
 				var n = document.createElement("div");
 				n.id = 'cu_name';
 				n.innerHTML = '<span>'+name+'</span>';
@@ -49,12 +53,12 @@ var ChatBox = (function () {
 				o.id = 'cu_online';
 				o.innerHTML = '<img src="images/green_light.png">';
 				
+				u.appendChild(i);
 				u.appendChild(p);
 				u.appendChild(n);
 				u.appendChild(o);
 				chat_List.appendChild(u);
 			}
-
 		};
 
 	};
@@ -76,6 +80,29 @@ var ChatBox = (function () {
 
 })();
 
+var p2pBox = (function(){
+	return {
+		init: function(n){
+			console.log(n);
+		}
+	};
+})();
+
+function alertUserWindow(n){
+	//console.log(n);
+	var c = n.childNodes;
+	for(i=0; i<c.length; i++){
+		if(c[i].id == "cu_name"){
+			p2pBox.init(c[i].lastChild.innerHTML);
+		}
+	}
+	console.log(n.firstChild.value);
+	
+	var username = getCookie('username');
+	if(username != null){
+		console.log('my username='+username);
+	}
+}
 
 // Usage:
 

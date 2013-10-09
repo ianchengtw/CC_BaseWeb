@@ -13,9 +13,8 @@ echo "<link rel='stylesheet' href='css/login.css'>";
 				break;
 			case 'Login Success':
 				outputArea.innerHTML = '登入成功';
-				var ID = document.getElementById('username').value;
-				//console.log(ID);
-				setCookie("ID",ID,3);
+				var username = document.getElementById('username').value;
+				setCookie("username",username,3);
 				window.location.href = "work.php";
 				break;
 			default:
@@ -39,9 +38,9 @@ echo "<link rel='stylesheet' href='css/login.css'>";
 		window.location.href="sign_up.php";
 	}
 	function ready(){
-		var ID = getCookie('ID');
-		if(ID != null){
-			document.getElementById('username').value = ID;
+		var username = getCookie('username');
+		if(username != null){
+			document.getElementById('username').value = username;
 		}
 	}
 	
