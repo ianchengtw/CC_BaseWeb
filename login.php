@@ -34,6 +34,9 @@ echo "<link rel='stylesheet' href='css/login.css'>";
 		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 		xmlhttp.send(str);
 	}
+	function enter(e) {
+		if (e.keyCode == 13)login();
+	}
 	function signUp(){
 		window.location.href="sign_up.php";
 	}
@@ -43,8 +46,6 @@ echo "<link rel='stylesheet' href='css/login.css'>";
 			document.getElementById('username').value = username;
 		}
 	}
-	
-	
 </script>
 
 <button onclick="signUp()" style="float:right;">Sign Up</button>
@@ -55,11 +56,11 @@ echo "<link rel='stylesheet' href='css/login.css'>";
 	<ul>
 		<li>
 			<div class='c1'>帳號</div>
-			<div class='c2'><input type='text' name='username' id='username'></div>
+			<div class='c2'><input type='text' name='username' id='username' onkeypress="enter(event)"></div>
 		</li>
 		<li>
 			<div class='c1'>密碼</div>
-			<div class='c2'><input type='password' name='password' id='password'></div>
+			<div class='c2'><input type='password' name='password' id='password' onkeypress="enter(event)"></div>
 		</li>
 	</ul>
 
