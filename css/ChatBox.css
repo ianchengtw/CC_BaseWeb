@@ -71,10 +71,8 @@ div[class^="cu_"] {
 	padding:3px;
 	position:relative;
 	top:0;
-	//bottom:33px;
 	width:244px;
 	height:224px;
-	//max-height:224px;
 	overflow:scroll;
 	overflow-x:hidden;
 	overflow-y:auto;

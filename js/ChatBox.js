@@ -4,7 +4,7 @@ var ChatBox = (function () {
 	function init() {
 		
 		var users = {};
-		var popWins = [];
+		var popWins = {};
 
 		// Private methods and variables
 		function createChatBox(){
@@ -52,30 +52,24 @@ var ChatBox = (function () {
 				box.appendChild(c);
 				box.appendChild(ia);
 				document.body.appendChild(box);
+				
+				popWins[j]=box;
 			}
 		}
 
-		function privateMethod(){
-			console.log( "I am private" );
-		}
-		
+		//Implement
 		createChatBox();
 		createPopWins();
 
 		return {
 
 			// Public methods and variables
-			publicMethod: function () {
-				console.log( "The public can see me!" );
-			},
-
-			publicProperty: "I am also public",
+			//publicProperty: "I am public",
 			
 			users: function(){return users;},
 
 			insertUser: function(id,name,pic,online){
 			
-				//users.push({'id':id,'name':name,'pic':pic,'online':online});
 				users[id]={'name':name,'pic':pic,'online':online};
 				
 				var u = document.createElement("div");
@@ -105,14 +99,8 @@ var ChatBox = (function () {
 			
 			popWin: function(id){
 				id=id.split("_")[1];
-				var pw=document.getElementById('popWin_0');
-				pw.style.display="block";
-				var cn=pw.childNodes;
-				for(var i=0;i<cn.length;i++){
-					if(cn[i].className=='pop_Bar'){
-						cn[i].firstChild.nodeValue=users[id].name;
-					}
-				}
+				popWins[0].style.display="block";
+				popWins[0].firstChild.firstChild.nodeValue=users[id].name;
 			}
 		};
 
@@ -135,36 +123,6 @@ var ChatBox = (function () {
 
 })();
 
-var p2pBox2 = (function(){
-	return {
-		init: function(n){
-			console.log(n);
-		}
-	};
-})();
-
-function P2PBox(){
-	var box = document.createElement("div");
-	box.className = 'p2p_Box';
-
-	var bar = document.createElement("div");
-	bar.className = 'p2p_Bar';
-	bar.innerHTML = "p2p";
-
-	var content = document.createElement("div");
-	content.className = 'p2p_content';
-	content.innerHTML = "p2p haha<br>p2p haha<br>p2p haha<br>p2p haha<br>";
-
-	box.appendChild(bar);
-	box.appendChild(content);
-	document.body.appendChild(box);
-}
-
-P2PBox.prototype = {
-	constructor: P2PBox,
-	
-}
-
 function alertUserWindow(n){
 	cb.popWin(n.id);
 	
@@ -177,11 +135,7 @@ function alertUserWindow(n){
 }
 function closeUserWindow(n){
 	var e = n.parentNode.parentElement;
-	for(i=0; i<c.length; i++){
-		if(c[i].name == "id"){
-			document.getElementById(e.id).style.display="none";
-		}
-	}
+	document.getElementById(e.id).style.display="none";
 }
 
 // Usage:
