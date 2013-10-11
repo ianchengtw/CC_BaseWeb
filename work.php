@@ -28,13 +28,13 @@ if(empty($_SESSION)){
 		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 		xmlhttp.send('mod=SignOut');
 	}
-	
+	window.onbeforeunload=SignOut;	//close window event
 </script>
 
 <button onclick=SignOut() style="float:right;">Sign Out</button>
 <p id="outputArea"></p>
 
-<script src="js/ChatBox.js"></script>
-<link rel='stylesheet' href='css/ChatBox.css'>
+<script src="js/ChatSystem.js"></script>
+<link rel='stylesheet' href='css/ChatSystem.css'>
 
 <?php closeHtml(); ?>

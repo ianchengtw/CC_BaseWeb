@@ -1,0 +1,110 @@
+.chat_Win {
+	width:250px;
+	border:2px outset gray;
+	border-bottom:none;
+	position:absolute;
+	right:10px;
+	bottom:0;
+}
+.chat_Bar {
+	padding:5px;
+	background-color:#00CCFF;
+	border-bottom:groove gray 2px;
+}
+#chat_List {
+	padding-top:2px;
+	height:auto;
+	max-height:300px;
+	overflow:scroll;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
+.chat_user {
+	
+}
+.chat_user:hover {
+	cursor:pointer;
+}
+div[class^="cu_"] {
+	float:left;
+	height:2em;
+	position:relative;
+}
+.cu_name {
+	width:60%;
+	line-height:2em;
+}
+.cu_name span{
+	vertical-align:middle;
+}
+.cu_pic {
+	width:20%;
+}
+.cu_online {
+	width:20%;
+}
+.cu_pic img {
+	position:absolute;
+	top:0;right:0;left:0;bottom:0;
+	margin:auto;
+}
+.cu_online img{
+	position:absolute;
+	top:0;right:0;left:0;bottom:0;
+	margin:auto;
+	width:40%;
+	height:50%;
+}
+
+.pop_Box {
+	width:250px;
+	height:300px;
+	border:2px outset gray;
+	border-bottom:none;
+}
+.pop_Bar {
+	padding:5px;
+	background-color:#00CCFF;
+	border-bottom:groove gray 2px;
+}
+.pop_content {
+	padding:3px;
+	position:relative;
+	top:0;
+	width:244px;
+	height:224px;
+	overflow:scroll;
+	overflow-x:hidden;
+	overflow-y:auto;
+	border-bottom:solid gray 2px;
+}
+.pop_content div {
+	background-color:#efefef;
+	margin:5px;
+	padding:3px 5px;
+	width:auto;
+}
+.pop_Btn {
+	float:right;
+}
+#inputArea {
+	position:absolute;
+	bottom:0;
+	width:235px;
+	font-size:0.9em;
+	margin-left:4px;
+}
+div[id^="popWin_"] {
+	position:absolute;
+	bottom:0;
+	display:none;
+}
+#popWin_0 {
+	right:270px;
+}
+#popWin_1 {
+	right:530px;
+}
+#popWin_2 {
+	right:790px;
+}
