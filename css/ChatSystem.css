@@ -11,6 +11,9 @@
 	background-color:#00CCFF;
 	border-bottom:groove gray 2px;
 }
+.chat_Bar:hover {
+	cursor:pointer;
+}
 #chat_List {
 	padding-top:2px;
 	height:auto;
@@ -61,6 +64,7 @@ div[class^="cu_"] {
 	height:300px;
 	border:2px outset gray;
 	border-bottom:none;
+	position:absolute;
 }
 .pop_Bar {
 	padding:5px;
@@ -69,7 +73,6 @@ div[class^="cu_"] {
 }
 .pop_content {
 	padding:3px;
-	position:relative;
 	top:0;
 	width:244px;
 	height:224px;
@@ -107,4 +110,27 @@ div[id^="popWin_"] {
 }
 #popWin_2 {
 	right:790px;
+}
+.wait_Win {
+	width:50px;
+	height:30px;
+	position:absolute;
+	right:1050px;
+	bottom:0;
+	background-color:#EBEBEB;
+}
+.wait_img {
+	width:60%;
+	height:30px;
+	bottom:0;
+	background-color:green;
+	float:left;
+}
+.wait_num {
+	width:40%;
+	height:30px;
+	position:relative;
+	bottom:0;
+	float:left;
+	margin-top:3px;
 }
