@@ -15,7 +15,6 @@
 	cursor:pointer;
 }
 #chat_List {
-	padding-top:2px;
 	height:auto;
 	max-height:300px;
 	overflow:scroll;
@@ -27,6 +26,9 @@
 }
 .chat_user:hover {
 	cursor:pointer;
+}
+.chat_user:hover div[class^="cu_"] {
+	background-color:#F3F3F3;
 }
 div[class^="cu_"] {
 	float:left;
@@ -55,8 +57,8 @@ div[class^="cu_"] {
 	position:absolute;
 	top:0;right:0;left:0;bottom:0;
 	margin:auto;
-	width:40%;
-	height:50%;
+	width:20%;
+	height:25%;
 }
 
 .pop_Box {

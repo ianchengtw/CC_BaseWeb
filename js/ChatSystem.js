@@ -72,7 +72,7 @@ MainWin.prototype = {
 			if(x.online==true || x.online=='1')
 				o.innerHTML = '<img src="images/green_light.png">';
 			else
-				o.innerHTML = '<img src="images/red_light.png">';
+				o.innerHTML;// = '<img src="images/red_light.png">';
 			
 			u.appendChild(p);
 			u.appendChild(n);
@@ -126,13 +126,13 @@ PopWin.prototype = {
 		this.user={};
 		this.available=true;
 		this.position="0";
-		this.view.style.display="none";
 		this.view.style.right=this.position;
+		this.view.style.display="none";
 	},
 	show: function(){
 		this.available=false;
-		this.view.style.display="block";
 		this.view.style.right=this.position;
+		this.view.style.display="block";
 		var n=this.view.childNodes;
 		n[0].firstChild.innerHTML=this.user.name;
 		n[1].innerHTML='';
@@ -146,7 +146,7 @@ PopWin.prototype = {
 	},
 	release: function(){
 		this.empty();
-		this.manager.release(this);
+		this.manager.releasePopWin(this);
 	}
 }
 function PopWinManager(){
@@ -155,6 +155,7 @@ function PopWinManager(){
 	this.pool.push(new PopWin('popWin_0',this));
 	this.pool.push(new PopWin('popWin_1',this));
 	this.pool.push(new PopWin('popWin_2',this));
+	this.waitWin = new WaitWin();
 }
 PopWinManager.prototype = {
 	getPopWin: function(){
@@ -191,7 +192,7 @@ PopWinManager.prototype = {
 		}
 		return null;
 	},
-	isUserExisted: function(user){
+	isUserExistedInPoor: function(user){
 		for(var i=0;i<this.pool.length;i++){
 			if(this.pool[i].user===user){
 				return true;
@@ -200,7 +201,7 @@ PopWinManager.prototype = {
 		return false;
 	},
 	alertPopWin: function(user){
-		if(!this.isUserExisted(user)){
+		if(!this.isUserExistedInPoor(user)){
 			var pw=this.getPopWin();
 			if(pw!==null){
 				pw.user=user;
@@ -208,7 +209,7 @@ PopWinManager.prototype = {
 			}
 		}
 	},
-	release: function(pw){
+	releasePopWin: function(pw){
 		for(var i=0;i<this.pool.length;i++){
 			if(this.pool[i]===pw){
 				pw.empty();
@@ -257,13 +258,13 @@ function WaitWin(){
 	document.body.appendChild(w);
 	w.style.display="none";
 	
-	this.users={};
-	this.count=0;
+	this.users=[];
+	this.count=n;
 	this.view=w;
 }
 WaitWin.prototype = {
 	empty: function(){
-		this.users={};
+		this.users=[];
 		this.count=0;
 	},
 	show: function(){
@@ -280,7 +281,7 @@ var ChatSystem = (function () {
 		var userData = {};
 		var mainWin = new MainWin();
 		var popWinManager = new PopWinManager();
-		var waitWin = new WaitWin();
+		//var waitWin = new WaitWin();
 		var chattingList = [];
 		var waitingList = [];
 
@@ -338,10 +339,8 @@ var ChatSystem = (function () {
 			toggleMainWin: function(){
 				if(mainWin.visible){
 					mainWin.view.lastChild.style.height="0";
-					mainWin.view.lastChild.style.padding="0";
 				}else{
 					mainWin.view.lastChild.style.height="auto";
-					mainWin.view.lastChild.style.padding="2px 0 0 0";
 				}
 				mainWin.visible=!mainWin.visible;
 			},
