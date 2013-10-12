@@ -170,13 +170,13 @@ PopWinManager.prototype = {
 				}
 				switch(j){
 					case 0:
-						this.pool[i].position="270px";
+						this.pool[i].position="230px";
 						break;
 					case 1:
-						this.pool[i].position="530px";
+						this.pool[i].position="490px";
 						break;
 					case 2:
-						this.pool[i].position="790px";
+						this.pool[i].position="750px";
 						break;
 				}
 				return this.pool[i]
@@ -192,6 +192,13 @@ PopWinManager.prototype = {
 		}
 		return null;
 	},
+	isLocationAvailable: function(){
+		for(var i=0;i<this.location.length;i++){
+			if(this.location[i]===null)
+				return true;
+		}
+		return false;
+	},
 	isUserExistedInPoor: function(user){
 		for(var i=0;i<this.pool.length;i++){
 			if(this.pool[i].user===user){
@@ -200,14 +207,33 @@ PopWinManager.prototype = {
 		}
 		return false;
 	},
+	kpp: function(user){
+		var pw=this.location[this.location.length-1];
+		this.waitWin.addUser(pw.user);
+		var wu=this.waitWin.pullUser(user);
+		pw.user=user;
+		pw.show();
+	},
 	alertPopWin: function(user){
-		if(!this.isUserExistedInPoor(user)){
-			var pw=this.getPopWin();
-			if(pw!==null){
-				pw.user=user;
-				pw.show();
+		if(this.waitWin.isUserExisted(user)){
+			this.kpp(user);
+		}else{
+			if(this.isUserExistedInPoor(user)){
+				return;
+			}else{
+				if(this.isLocationAvailable()){
+					var pw=this.getPopWin();
+					if(pw!==null){
+						pw.user=user;
+						pw.show();
+					}else{
+					}
+				}else{
+					this.kpp(user);
+				}
 			}
 		}
+		this.waitWin.show();
 	},
 	releasePopWin: function(pw){
 		for(var i=0;i<this.pool.length;i++){
@@ -227,16 +253,22 @@ PopWinManager.prototype = {
 				if(this.location[j]!==null)
 				switch(j){
 					case 1:
-						this.location[j].movePos("270px");
+						this.location[j].movePos("230px");
 						this.location[j-1]=this.location[j];
 						this.location[j]=null;
 						break;
 					case 2:
-						this.location[j].movePos("530px");
+						this.location[j].movePos("490px");
 						this.location[j-1]=this.location[j];
 						this.location[j]=null;
 						break;
 				}
+			}
+		}
+		if(!this.waitWin.isEmpty()){
+			var user=this.waitWin.popUser();
+			if(user!==null){
+				this.alertPopWin(user);
 			}
 		}
 	}
@@ -251,7 +283,7 @@ function WaitWin(){
 	
 	var n = document.createElement("div");
 	n.className = 'wait_num';
-	n.innerHTML=0;
+	//n.innerHTML=0;
 	
 	w.appendChild(i);
 	w.appendChild(n);
@@ -259,16 +291,70 @@ function WaitWin(){
 	w.style.display="none";
 	
 	this.users=[];
-	this.count=n;
 	this.view=w;
 }
 WaitWin.prototype = {
 	empty: function(){
 		this.users=[];
-		this.count=0;
+		this.view.style.display="none";
 	},
 	show: function(){
-		this.view.style.display="block";
+		if(this.isEmpty()){
+			this.empty();
+		}else{
+			this.view.lastChild.innerHTML=this.users.length;
+			this.view.style.display="block";
+			var str='';
+			this.users.map(function(u){
+				str+=u.name+','
+			});
+			console.log(str);
+		}
+	},
+	isUserExisted: function(user){
+		for(var i=0;i<this.users.length;i++){
+			if(this.users[i]===user){
+				return true;
+			}
+		}
+		return false;
+	},
+	isEmpty: function(){
+		return (this.users.length)?false:true;
+	},
+	addUser: function(user){
+		if(!this.isUserExisted(user)){
+			this.users.push(user);
+			this.show();
+		}
+	},
+	popUser: function(){
+		if(this.isEmpty()){
+			this.empty();
+			return null;
+		}else{
+			var user=this.users.shift();
+			if(this.isEmpty()){
+				this.empty();
+			}else{
+				this.show();
+			}
+			return user;
+		}
+	},
+	pullUser: function(user){
+		if(this.isUserExisted(user)){
+			var newUsers=[];
+			while(this.users.length){
+				var u=this.users.pop();
+				if(u!==user){
+					newUsers.push(u);
+				}
+			}
+			this.users=newUsers;
+			return true;
+		}
+		return null;
 	}
 }
 
@@ -281,7 +367,6 @@ var ChatSystem = (function () {
 		var userData = {};
 		var mainWin = new MainWin();
 		var popWinManager = new PopWinManager();
-		//var waitWin = new WaitWin();
 		var chattingList = [];
 		var waitingList = [];
 
@@ -396,6 +481,14 @@ cb.update('InsertUser,2,Mary,images/default_user_pic.png,1');
 cb.update('InsertUser,3,Alice,images/default_user_pic.png,0');
 cb.update('InsertUser,4,George,images/default_user_pic.png,1');
 cb.update('InsertUser,5,Chili,images/default_user_pic.png,0');
+cb.update('InsertUser,6,Alex,images/default_user_pic.png,0');
+cb.update('InsertUser,7,Sylvia,images/default_user_pic.png,0');
+cb.update('InsertUser,8,Sandy,images/default_user_pic.png,0');
+cb.update('InsertUser,14,George,images/default_user_pic.png,1');
+cb.update('InsertUser,15,Chili,images/default_user_pic.png,0');
+cb.update('InsertUser,16,Alex,images/default_user_pic.png,0');
+cb.update('InsertUser,17,Sylvia,images/default_user_pic.png,0');
+cb.update('InsertUser,18,Sandy,images/default_user_pic.png,0');
 cb.update('UpdateMsg,1,2,Mary,12569537329,This is a test1.This is a test1.This is a test1.This is a test1.This is a test1.');
 cb.update('UpdateMsg,2,2,Mary,12569537330,This is a test2.');
 cb.update('UpdateMsg,3,2,Mary,12569537331,This is a test3.');
