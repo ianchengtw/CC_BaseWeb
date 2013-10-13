@@ -89,6 +89,9 @@ div[class^="cu_"] {
 	padding:3px 5px;
 	width:auto;
 }
+.pop_content div img{
+	padding-right:5px;
+}
 .pop_Btn {
 	float:right;
 }

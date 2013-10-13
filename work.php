@@ -14,7 +14,7 @@ if(empty($_SESSION)){
 <link rel='stylesheet' href='css/ChatSystem.css'>
 <script>
 	function updateView(data){
-		console.log('updateView= '+data);
+		//console.log('updateView= '+data);
 		switch(data){
 			case 'SignOutOK':
 				outputArea.innerHTML = '登出成功';

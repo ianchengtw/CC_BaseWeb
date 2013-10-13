@@ -82,6 +82,7 @@ class Message extends baseMod {
 						}
 					}
 					
+					//updateMsg in chattingWin
 					$hostID = getUserId($_SESSION['username']);
 					$str = "";
 					$str2 = "";
@@ -111,6 +112,7 @@ class Message extends baseMod {
 						}
 					}
 					
+					//updateMsg from unreaded user
 					$sql = "SELECT * FROM `msg` AS a
 						LEFT JOIN 
 						(SELECT `is_readed`, `msg_id` FROM `readed_msg`) AS b
@@ -136,6 +138,19 @@ class Message extends baseMod {
 					
 					echo $str;
 					echo $str2;
+					
+					//UpdateUserOnlineStatus
+					$userList = $this->getUserList();
+					$hostID = getUserId($_SESSION['username']);
+					
+					foreach ($userList as $v) {
+						if($v[0]!=$hostID){
+							echo "UpdateUserOnline".",".
+								$v[0].",".
+								$v[2].";";
+						}
+					}
+					
 					break;
 			}
 		}

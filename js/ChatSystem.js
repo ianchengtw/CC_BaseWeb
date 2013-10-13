@@ -138,8 +138,16 @@ PopWin.prototype = {
 		var n=this.view.childNodes;
 		n[0].firstChild.innerHTML=this.user.name;
 		n[1].innerHTML='';
+		var hostID=this.manager.hostData.id;
+		var user=this.user;
 		this.user.msgs.map(function(m){
-			n[1].innerHTML+='<div>'+m.msg+'</div>';
+			if(m.from_uid!=hostID){
+				n[1].innerHTML+='<div>'+
+						'<img src="'+user.pic+'">'+
+						m.msg+'</div>';
+			}else{
+				n[1].innerHTML+='<div>'+m.msg+'</div>';
+			}
 		});
 	},
 	movePos: function(pos){
@@ -158,6 +166,7 @@ function PopWinManager(){
 	this.pool.push(new PopWin('popWin_1',this));
 	this.pool.push(new PopWin('popWin_2',this));
 	this.waitWin = new WaitWin();
+	this.hostData = {};
 }
 PopWinManager.prototype = {
 	getPopWin: function(){
@@ -390,7 +399,7 @@ var ChatSystem = (function () {
 			mainWin.users=userData;
 			mainWin.show();
 		}
-		function palertPopWin(u_id){
+		function privateAlertPopWin(u_id){
 			var user=null;
 			for(key in userData){
 				if(userData[key].id==u_id){
@@ -417,6 +426,7 @@ var ChatSystem = (function () {
 					switch(u[0]){
 						case 'HostData':
 							hostData = new UserData(u[1],u[2],u[3],u[4]);
+							popWinManager.hostData=hostData;
 							break;
 						case 'InsertUser':
 							userData[u[1]]=new UserData(u[1],u[2],u[3],u[4]);
@@ -436,8 +446,13 @@ var ChatSystem = (function () {
 							}
 							break;
 						case 'PopChattingWin':
-							console.log('PopChattingWin,'+u[1]);
-							palertPopWin(u[1]);
+							privateAlertPopWin(u[1]);
+							break;
+						case 'UpdateUserOnline':
+							if(userData[u[1]]){
+								userData[u[1]].online=u[2];
+								mainWin.show();
+							}
 							break;
 					}
 				});
@@ -539,16 +554,6 @@ function sendMsg(e){
 		}
 	}
 }
-function getUserMsgLast10(u_id){
-	xmlhttp.open('POST', 'message.php', true);
-	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xmlhttp.send("mod=getUserMsgLast10&u="+u_id);
-}
-function getUserUnreadedMsg(u_id){
-	xmlhttp.open('POST', 'message.php', true);
-	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xmlhttp.send("mod=getUserUnreadedMsg&u="+u_id);
-}
 function getUserList(){
 	xmlhttp.open('POST', 'message.php', true);
 	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -558,6 +563,7 @@ function csInit(){
 	getUserList();
 }
 var csSync=function(){
+	/*
 	var objToday = new Date(),
 	weekday = new Array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'),
 	dayOfWeek = weekday[objToday.getDay()],
@@ -572,7 +578,7 @@ var csSync=function(){
 	curMeridiem = objToday.getHours() > 12 ? "PM" : "AM";
 	var today = curHour + ":" + curMinute + "." + curSeconds + curMeridiem + " " + dayOfWeek + " " + dayOfMonth + " of " + curMonth + ", " + curYear;
 	console.log('sync1='+xmlhttp.readyState+',date='+today);
-	
+	*/
 	var userIDs = cs.getChattingUserId();
 	var usersRequest="";
 	if(userIDs!==null){
@@ -584,9 +590,3 @@ var csSync=function(){
 	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	xmlhttp.send("mod=sync"+usersRequest);
 }
-// Usage:
-
-
-//cb.update('UpdateMsg,1,12,10,12569537329,This is a test1.This is a test1.This is a test1.This is a test1.This is a test1.');
-//cb.update('UpdateMsg,2,12,10,12569537330,This is a test2.');
-//cb.update('UpdateMsg,3,12,10,12569537331,This is a test3.');
