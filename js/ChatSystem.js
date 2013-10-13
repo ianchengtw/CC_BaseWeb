@@ -5,10 +5,10 @@ function UserData(id,name,pic,online){
 	this.online=online;
 	this.msgs=[];
 }
-function Msg(id,user_id,username,timestamp,msg){
+function Msg(id,from_uid,to_uid,timestamp,msg){
 	this.id=id;
-	this.user_id=user_id;
-	this.username=username;
+	this.from_uid=from_uid;
+	this.to_uid=to_uid;
 	this.timestamp=timestamp;
 	this.msg=msg;
 }
@@ -105,6 +105,7 @@ function PopWin(id,manager){
 	var ia = document.createElement("input");
 	ia.id = "inputArea";
 	ia.type = "text";
+	ia.setAttribute("onkeyup", "sendMsg(event)");
 
 	bar.appendChild(name);
 	bar.appendChild(btn);
@@ -128,6 +129,7 @@ PopWin.prototype = {
 		this.position="0";
 		this.view.style.right=this.position;
 		this.view.style.display="none";
+		this.view.lastChild.value="";
 	},
 	show: function(){
 		this.available=false;
@@ -271,6 +273,17 @@ PopWinManager.prototype = {
 				this.alertPopWin(user);
 			}
 		}
+	},
+	updateVisiblePopWinMsg: function(uid){
+		for(var i=0;i<this.location.length;i++){
+			if(this.location[i]!==null){
+				if(this.location[i].user.id===uid){
+					this.location[i].show();
+					var e=this.location[i].view.childNodes[1];
+					e.scrollTop=e.scrollHeight;
+				}
+			}
+		}
 	}
 }
 function WaitWin(){
@@ -304,11 +317,6 @@ WaitWin.prototype = {
 		}else{
 			this.view.lastChild.innerHTML=this.users.length;
 			this.view.style.display="block";
-			var str='';
-			this.users.map(function(u){
-				str+=u.name+','
-			});
-			console.log(str);
 		}
 	},
 	isUserExisted: function(user){
@@ -367,8 +375,6 @@ var ChatSystem = (function () {
 		var userData = {};
 		var mainWin = new MainWin();
 		var popWinManager = new PopWinManager();
-		var chattingList = [];
-		var waitingList = [];
 
 		// Private methods and variables
 		function init(){
@@ -396,14 +402,23 @@ var ChatSystem = (function () {
 							mainWin.show();
 							break;
 						case 'UpdateMsg':
-							userData[u[2]].msgs.push(new Msg(u[1],u[2],u[3],u[4],u[5]));
+							var m="";
+							for(var i=5;i<u.length;i++){
+								m+=u[i];
+							}
+							if(u[2]==hostData.id){
+								userData[u[3]].msgs.push(new Msg(u[1],u[2],u[3],u[4],m));
+								popWinManager.updateVisiblePopWinMsg(u[3]);
+							}else{
+								userData[u[2]].msgs.push(new Msg(u[1],u[2],u[3],u[4],m));
+								popWinManager.updateVisiblePopWinMsg(u[2]);
+							}
 							break;
 					}
 				});
 			},
 			
 			alertPopWin: function(u_id){
-				var u_id=u_id.split("_")[1];
 				var user=null;
 				for(key in userData){
 					if(userData[key].id==u_id){
@@ -434,9 +449,16 @@ var ChatSystem = (function () {
 
 			},
 			
+			getUserIDByPopWin: function(pw_id){
+				var pw=popWinManager.getPopWinById(pw_id);
+				if(pw!==null){
+					return pw.user.id;
+				}
+			},
+			
 			test: function(){
 
-				//hostData.msgs.push(new Msg(1,"Mary",12569537329,"this is a test."));
+				//hostData.msgs.push(new Msg(1,"Mary",1381593993777,"this is a test."));
 				//console.log(hostData.msgs[0].toDate());
 			}
 		};
@@ -460,35 +482,77 @@ var ChatSystem = (function () {
 })();
 
 function alertPopWin(n){
-	cb.alertPopWin(n.id);
+	var u_id=n.id.split("_")[1];
+	getUserMsgLast10(u_id);
+	cs.alertPopWin(u_id);
 }
 function closePopWin(n){
 	var e = n.parentNode.parentElement;
-	cb.closePopWin(e.id);
+	cs.closePopWin(e.id);
 }
 function toggleMainWin(n){
-	cb.toggleMainWin();
+	cs.toggleMainWin();
 }
 function togglePopWin(n){
 	var e = n.parentElement;
-	cb.togglePopWin(e.id);
+	cs.togglePopWin(e.id);
+}
+function sendMsg(e){
+	if (e.keyCode == 13){
+		var n=e.target || e.srcElement;
+		if(n.value!=""){
+			var toID=cs.getUserIDByPopWin(n.parentElement.id);
+			console.log(toID);
+			var msg="mod=msg&t="+toID+"&m="+n.value;
+			xmlhttp.open('POST', 'message.php', true);
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(msg);
+			n.value="";
+		}
+	}
+}
+function getUserMsgLast10(u_id){
+	console.log('u_id='+u_id);
+	xmlhttp.open('POST', 'message.php', true);
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xmlhttp.send("mod=getUserMsgLast10&u="+u_id);
+}
+function getUserUnreadedMsg(u_id){
+	xmlhttp.open('POST', 'message.php', true);
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xmlhttp.send("mod=getUserUnreadedMsg&u="+u_id);
+}
+function getUserList(){
+	xmlhttp.open('POST', 'message.php', true);
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xmlhttp.send("mod=getUserList");
+}
+function csInit(){
+	getUserList();
+}
+var csSync=function(){
+	var objToday = new Date(),
+	weekday = new Array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'),
+	dayOfWeek = weekday[objToday.getDay()],
+	domEnder = new Array( 'th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th' ),
+	dayOfMonth = today + (objToday.getDate() < 10) ? '0' + objToday.getDate() + domEnder[objToday.getDate()] : objToday.getDate() + domEnder[parseFloat(("" + objToday.getDate()).substr(("" + objToday.getDate()).length - 1))],
+	months = new Array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'),
+	curMonth = months[objToday.getMonth()],
+	curYear = objToday.getFullYear(),
+	curHour = objToday.getHours() > 12 ? objToday.getHours() - 12 : (objToday.getHours() < 10 ? "0" + objToday.getHours() : objToday.getHours()),
+	curMinute = objToday.getMinutes() < 10 ? "0" + objToday.getMinutes() : objToday.getMinutes(),
+	curSeconds = objToday.getSeconds() < 10 ? "0" + objToday.getSeconds() : objToday.getSeconds(),
+	curMeridiem = objToday.getHours() > 12 ? "PM" : "AM";
+	var today = curHour + ":" + curMinute + "." + curSeconds + curMeridiem + " " + dayOfWeek + " " + dayOfMonth + " of " + curMonth + ", " + curYear;
+	console.log('sync1='+xmlhttp.readyState+',date='+today);
+	
+	xmlhttp.open('POST', 'message.php', true);
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xmlhttp.send("mod=sync");
 }
 // Usage:
 
-var cb = ChatSystem.getInstance();
-cb.update('HostData,1,Ian,images/default_user_pic.png,1');
-cb.update('InsertUser,2,Mary,images/default_user_pic.png,1');
-cb.update('InsertUser,3,Alice,images/default_user_pic.png,0');
-cb.update('InsertUser,4,George,images/default_user_pic.png,1');
-cb.update('InsertUser,5,Chili,images/default_user_pic.png,0');
-cb.update('InsertUser,6,Alex,images/default_user_pic.png,0');
-cb.update('InsertUser,7,Sylvia,images/default_user_pic.png,0');
-cb.update('InsertUser,8,Sandy,images/default_user_pic.png,0');
-cb.update('InsertUser,14,George,images/default_user_pic.png,1');
-cb.update('InsertUser,15,Chili,images/default_user_pic.png,0');
-cb.update('InsertUser,16,Alex,images/default_user_pic.png,0');
-cb.update('InsertUser,17,Sylvia,images/default_user_pic.png,0');
-cb.update('InsertUser,18,Sandy,images/default_user_pic.png,0');
-cb.update('UpdateMsg,1,2,Mary,12569537329,This is a test1.This is a test1.This is a test1.This is a test1.This is a test1.');
-cb.update('UpdateMsg,2,2,Mary,12569537330,This is a test2.');
-cb.update('UpdateMsg,3,2,Mary,12569537331,This is a test3.');
+
+//cb.update('UpdateMsg,1,12,10,12569537329,This is a test1.This is a test1.This is a test1.This is a test1.This is a test1.');
+//cb.update('UpdateMsg,2,12,10,12569537330,This is a test2.');
+//cb.update('UpdateMsg,3,12,10,12569537331,This is a test3.');

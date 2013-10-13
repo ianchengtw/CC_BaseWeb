@@ -48,7 +48,7 @@ interface mod{
 }
 class org{
 	var $_database = null;
-	var $_backPage = 'http://localhost/TeacherThanks/project/index.php';
+	var $_backPage = 'http://localhost/TeacherThanks/CC_BaseWeb/index.php';
 	var $_title = 'Ian project';
 	var $_content;
 	var $_css;
@@ -88,7 +88,7 @@ class baseMod extends org implements mod{
 				}
 			}
 		}else{
-			//header('location: '.$this->_backPage);
+			header('location: '.$this->_backPage);
 		}
 		if(!empty($_GET)){$this->get();}
 		elseif(!empty($_POST)){$this->post();}

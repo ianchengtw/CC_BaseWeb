@@ -1,3 +1,4 @@
+/*
 var xmlhttp;
 if(typeof XMLHttpRequest != "undefined"){
 	xmlhttp = new XMLHttpRequest();
@@ -42,7 +43,7 @@ function timeUpdate(){
 	updataView();
 	setTimeout(timeUpdate(), 2*1000);
 }
-
+*/
 function ready(){}
 function setCookie(c_name,value,exdays)
 {
