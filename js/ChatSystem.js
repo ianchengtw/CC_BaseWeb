@@ -284,6 +284,15 @@ PopWinManager.prototype = {
 				}
 			}
 		}
+	},
+	getChattingUserId: function(){
+		var a=[];
+		for(var i=0;i<this.location.length;i++){
+			if(this.location[i]!==null){
+				a.push(this.location[i].user.id);
+			}
+		}
+		return (a.length)?a:null;
 	}
 }
 function WaitWin(){
@@ -381,6 +390,18 @@ var ChatSystem = (function () {
 			mainWin.users=userData;
 			mainWin.show();
 		}
+		function palertPopWin(u_id){
+			var user=null;
+			for(key in userData){
+				if(userData[key].id==u_id){
+					user=userData[key];
+					break;
+				}
+			}
+			if(user!==null){
+				popWinManager.alertPopWin(user);
+			}
+		}
 		
 		//Implement
 		init();
@@ -413,6 +434,10 @@ var ChatSystem = (function () {
 								userData[u[2]].msgs.push(new Msg(u[1],u[2],u[3],u[4],m));
 								popWinManager.updateVisiblePopWinMsg(u[2]);
 							}
+							break;
+						case 'PopChattingWin':
+							console.log('PopChattingWin,'+u[1]);
+							palertPopWin(u[1]);
 							break;
 					}
 				});
@@ -456,6 +481,10 @@ var ChatSystem = (function () {
 				}
 			},
 			
+			getChattingUserId: function(){
+				return popWinManager.getChattingUserId();
+			},
+			
 			test: function(){
 
 				//hostData.msgs.push(new Msg(1,"Mary",1381593993777,"this is a test."));
@@ -483,7 +512,7 @@ var ChatSystem = (function () {
 
 function alertPopWin(n){
 	var u_id=n.id.split("_")[1];
-	getUserMsgLast10(u_id);
+	//getUserMsgLast10(u_id);
 	cs.alertPopWin(u_id);
 }
 function closePopWin(n){
@@ -502,7 +531,6 @@ function sendMsg(e){
 		var n=e.target || e.srcElement;
 		if(n.value!=""){
 			var toID=cs.getUserIDByPopWin(n.parentElement.id);
-			console.log(toID);
 			var msg="mod=msg&t="+toID+"&m="+n.value;
 			xmlhttp.open('POST', 'message.php', true);
 			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -512,7 +540,6 @@ function sendMsg(e){
 	}
 }
 function getUserMsgLast10(u_id){
-	console.log('u_id='+u_id);
 	xmlhttp.open('POST', 'message.php', true);
 	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	xmlhttp.send("mod=getUserMsgLast10&u="+u_id);
@@ -546,9 +573,16 @@ var csSync=function(){
 	var today = curHour + ":" + curMinute + "." + curSeconds + curMeridiem + " " + dayOfWeek + " " + dayOfMonth + " of " + curMonth + ", " + curYear;
 	console.log('sync1='+xmlhttp.readyState+',date='+today);
 	
+	var userIDs = cs.getChattingUserId();
+	var usersRequest="";
+	if(userIDs!==null){
+		for(var i=0;i<userIDs.length;i++){
+			usersRequest+="&u"+i+"="+userIDs[i];
+		}
+	}
 	xmlhttp.open('POST', 'message.php', true);
 	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xmlhttp.send("mod=sync");
+	xmlhttp.send("mod=sync"+usersRequest);
 }
 // Usage:
 

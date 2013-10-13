@@ -24,10 +24,10 @@ class Message extends baseMod {
 							$row = mysql_fetch_assoc($result);
 							$msg_id = $row['LAST_INSERT_ID()'];
 
-							$sql = "INSERT INTO `readed_msg`(`msg_id`, `user_id`, `is_readed`) 
+							$sql = "INSERT INTO `readed_msg`(`msg_id`, `receiver_id`,`is_readed`) 
 										VALUES ('".$msg_id."','".$hostID."',true);";
 							mysql_query($sql);
-							$sql = "INSERT INTO `readed_msg`(`msg_id`, `user_id`, `is_readed`) 
+							$sql = "INSERT INTO `readed_msg`(`msg_id`, `receiver_id`,`is_readed`) 
 										VALUES ('".$msg_id."','".$to_id."',false);";
 							mysql_query($sql);
 
@@ -65,25 +65,77 @@ class Message extends baseMod {
 					}
 					break;
 				case 'sync':
+					$userIDs = array();
+					if(isset($_POST['u0'])){
+						if($_POST['u0']!==""){
+							array_push($userIDs, $_POST['u0']);
+						}
+					}
+					if(isset($_POST['u1'])){
+						if($_POST['u1']!==""){
+							array_push($userIDs, $_POST['u1']);
+						}
+					}
+					if(isset($_POST['u2'])){
+						if($_POST['u2']!==""){
+							array_push($userIDs, $_POST['u2']);
+						}
+					}
+					
 					$hostID = getUserId($_SESSION['username']);
+					$str = "";
+					$str2 = "";
+					
+					for($i=0;$i<sizeof($userIDs);$i++){
+						
+						$fromID = $userIDs[$i];
+						$sql = "SELECT * FROM `msg` AS a
+							LEFT JOIN 
+							(SELECT `is_readed`, `msg_id` FROM `readed_msg`) AS b
+							ON a.`id`=b.`msg_id`
+							WHERE b.`is_readed`=false AND a.`from_id`='".$fromID."' AND a.`to_id`='".$hostID."';";
+						$result = mysql_query($sql) or die(mysql_error());
+
+						if($result){
+							
+							while ($row = mysql_fetch_assoc($result)) {
+								$str .= "UpdateMsg".",".
+									$row['id'].",".
+									$row['from_id'].",".
+									$row['to_id'].",".
+									$row['time'].",".
+									$row['msg'].";";
+								$sql = "UPDATE `readed_msg` SET `is_readed`=true WHERE `msg_id`='".$row['id']."' AND `receiver_id`='".$hostID."';";
+								mysql_query($sql);
+							}
+						}
+					}
+					
 					$sql = "SELECT * FROM `msg` AS a
 						LEFT JOIN 
 						(SELECT `is_readed`, `msg_id` FROM `readed_msg`) AS b
 						ON a.`id`=b.`msg_id`
-						WHERE a.`to_id`='".$hostID."' AND b.`is_readed`=false;";
+						WHERE b.`is_readed`=false AND a.`to_id`='".$hostID."';";
 					$result = mysql_query($sql) or die(mysql_error());
-					
-					while ($row = mysql_fetch_assoc($result)) {
-						echo "UpdateMsg".",".
-							$row['id'].",".
-							$row['from_id'].",".
-							$row['to_id'].",".
-							$row['time'].",".
-							$row['msg'].";";
+
+					if($result){
+						while ($row = mysql_fetch_assoc($result)) {
+							$str .= "UpdateMsg".",".
+								$row['id'].",".
+								$row['from_id'].",".
+								$row['to_id'].",".
+								$row['time'].",".
+								$row['msg'].";";
+							$str2 .= "PopChattingWin".",".
+								$row['from_id'].";";
+						}
+
+						$sql = "UPDATE `readed_msg` SET `is_readed`=true WHERE `receiver_id`='".$hostID."';";
+						mysql_query($sql);
 					}
 					
-					$sql = "UPDATE `readed_msg` SET `is_readed`=true WHERE `user_id`='".$hostID."';";
-					mysql_query($sql);
+					echo $str;
+					echo $str2;
 					break;
 			}
 		}
