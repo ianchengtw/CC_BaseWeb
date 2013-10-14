@@ -1,5 +1,9 @@
 <?php
-define("DOMAIN", "http://localhost/");
+if(isset($_SERVER["SERVER_ADDR"])){
+	define("DOMAIN", "http://".$_SERVER["SERVER_ADDR"]."/");
+}else{
+	define("DOMAIN", "http://localhost/");
+}
 define("ROOT", DOMAIN."TeacherThanks/CC_BaseWeb/");
 
 function openHtml($title="", $content=0, $css="", $js="", $ajax=false){
