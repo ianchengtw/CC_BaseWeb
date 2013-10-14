@@ -100,11 +100,12 @@ class Message extends baseMod {
 						if($result){
 							
 							while ($row = mysql_fetch_assoc($result)) {
+								$time = strtotime($row['time']);
 								$str .= "UpdateMsg".",".
 									$row['id'].",".
 									$row['from_id'].",".
 									$row['to_id'].",".
-									$row['time'].",".
+									$time.",".
 									$row['msg'].";";
 								$sql = "UPDATE `readed_msg` SET `is_readed`=true WHERE `msg_id`='".$row['id']."' AND `receiver_id`='".$hostID."';";
 								mysql_query($sql);
@@ -122,11 +123,12 @@ class Message extends baseMod {
 
 					if($result){
 						while ($row = mysql_fetch_assoc($result)) {
+							$time = strtotime($row['time']);
 							$str .= "UpdateMsg".",".
 								$row['id'].",".
 								$row['from_id'].",".
 								$row['to_id'].",".
-								$row['time'].",".
+								$time.",".
 								$row['msg'].";";
 							$str2 .= "PopChattingWin".",".
 								$row['from_id'].";";

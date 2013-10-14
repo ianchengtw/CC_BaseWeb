@@ -15,14 +15,16 @@ function Msg(id,from_uid,to_uid,timestamp,msg){
 Msg.prototype = {
 	toDate: function(){
 		var a = new Date(this.timestamp*1000);
-		var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+		//var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 		var year = a.getFullYear();
-		var month = months[a.getMonth()];
-		var date = a.getDate();
-		var hour = a.getHours();
-		var min = a.getMinutes();
-		var sec = a.getSeconds();
-		var time = date+','+month+' '+year+' '+hour+':'+min+':'+sec;
+		//var month = months[a.getMonth()];
+		var month = a.getMonth()+1;	month=(month<10)?'0'+month:month;
+		var date = a.getDate();		date=(date<10)?'0'+date:date;
+		var hour = a.getHours();	hour=(hour<10)?'0'+hour:hour;
+		var min = a.getMinutes();	min=(min<10)?'0'+min:min;
+		var sec = a.getSeconds();	sec=(month<10)?'0'+sec:sec;
+		//var time = date+','+month+' '+year+' '+hour+':'+min+':'+sec;
+		var time = year+'/'+month+'/'+date+' '+hour+':'+min;
 		return time;
 	}
 }
@@ -141,13 +143,14 @@ PopWin.prototype = {
 		var hostID=this.manager.hostData.id;
 		var user=this.user;
 		this.user.msgs.map(function(m){
+			var c='<div>';
 			if(m.from_uid!=hostID){
-				n[1].innerHTML+='<div>'+
-						'<img src="'+user.pic+'">'+
-						m.msg+'</div>';
-			}else{
-				n[1].innerHTML+='<div>'+m.msg+'</div>';
+				c+='<img src="'+user.pic+'">';
 			}
+			c+=m.msg;
+			c+='<span>'+m.toDate()+'</span>';
+			c+='</div>';
+			n[1].innerHTML+=c;
 		});
 	},
 	movePos: function(pos){
