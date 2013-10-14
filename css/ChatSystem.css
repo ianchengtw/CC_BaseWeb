@@ -37,7 +37,7 @@ div[class^="cu_"] {
 }
 .cu_name {
 	width:70%;
-	line-height:2em;
+	line-height:1.9em;
 }
 .cu_name span{
 	vertical-align:middle;
@@ -73,6 +73,12 @@ div[class^="cu_"] {
 	background-color:#00CCFF;
 	border-bottom:groove gray 2px;
 }
+.pop_Bar img{
+	float:left;
+	margin:5px;
+	width:11px;
+	height:100%;
+}
 .pop_content {
 	padding:3px;
 	top:0;
@@ -105,27 +111,20 @@ div[class^="cu_"] {
 }
 .pop_Btn {
 	float:right;
+	height:100%;
 }
 #inputArea {
 	position:absolute;
 	bottom:0;
-	width:235px;
+	width:97%;
+	height:2.0em;
 	font-size:0.9em;
-	margin-left:4px;
+	margin:auto;
 }
 div[id^="popWin_"] {
 	position:absolute;
 	bottom:0;
 	display:none;
-}
-#popWin_0 {
-	right:270px;
-}
-#popWin_1 {
-	right:530px;
-}
-#popWin_2 {
-	right:790px;
 }
 .wait_Win {
 	width:50px;

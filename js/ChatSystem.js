@@ -94,6 +94,9 @@ function PopWin(id,manager){
 	
 	var name=document.createElement("span");
 	name.innerHTML="User Name";
+	
+	var img=document.createElement("img");
+	img.src = 'images/green_light.png';
 
 	var c = document.createElement("div");
 	c.className = 'pop_content';
@@ -110,6 +113,7 @@ function PopWin(id,manager){
 	ia.setAttribute("onkeyup", "sendMsg(event)");
 
 	bar.appendChild(name);
+	bar.appendChild(img);
 	bar.appendChild(btn);
 	box.appendChild(bar);
 	box.appendChild(c);
@@ -152,6 +156,16 @@ PopWin.prototype = {
 			c+='</div>';
 			n[1].innerHTML+=c;
 		});
+		this.updateUserOnline();
+	},
+	updateUserOnline: function(){
+		var user=this.user;
+		var img=this.view.childNodes[0].childNodes[1];
+		if(user.online==true || user.online=='1'){
+			img.src="images/green_light.png";
+		}else{
+			img.src="";
+		}
 	},
 	movePos: function(pos){
 		this.position=pos;
@@ -294,6 +308,13 @@ PopWinManager.prototype = {
 					var e=this.location[i].view.childNodes[1];
 					e.scrollTop=e.scrollHeight;
 				}
+			}
+		}
+	},
+	updateUserOnline: function(){
+		for(var i=0;i<this.location.length;i++){
+			if(this.location[i]!==null){
+				this.location[i].updateUserOnline();
 			}
 		}
 	},
@@ -455,6 +476,7 @@ var ChatSystem = (function () {
 							if(userData[u[1]]){
 								userData[u[1]].online=u[2];
 								mainWin.show();
+								popWinManager.updateUserOnline();
 							}
 							break;
 					}
@@ -530,7 +552,6 @@ var ChatSystem = (function () {
 
 function alertPopWin(n){
 	var u_id=n.id.split("_")[1];
-	//getUserMsgLast10(u_id);
 	cs.alertPopWin(u_id);
 }
 function closePopWin(n){
